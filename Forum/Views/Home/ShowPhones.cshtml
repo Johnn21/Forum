@@ -1,0 +1,30 @@
+﻿@model IEnumerable<Forum.Models.Post>
+
+
+
+@{
+    ViewBag.Title = "ShowPhones";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>ShowPhones</h2>
+
+<table class="table table-striped table-bordered">
+    <thead style="background-color:cornflowerblue; color:white">
+        <tr>
+            <td>Title</td>
+            <td>Add Date</td>
+            <td>Posted By:</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var post in Model)
+        {
+            <tr>
+                <td>@Html.ActionLink(post.Name, "Details", "Posts", new { id = post.Id }, null)</td>
+                <td>@post.DateAdded</td>
+                <td>@post.IdentityUser.UserName</td>
+            </tr>
+        }
+    </tbody>
+</table>

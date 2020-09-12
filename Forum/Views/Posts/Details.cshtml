@@ -1,0 +1,251 @@
+﻿@model Forum.ViewModels.PostQuestionsModel
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<class ="container">
+
+    <h2>Details</h2>
+
+    <div class="row">
+        <div class="col-md-5">
+            <h3 style="padding-top:50px;">Description</h3>
+        </div>
+        <div class="col-md-offset-5">
+            <h3 style="margin-top:70px;">Specs</h3>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-5">
+            <div class="form-group">
+                <textarea disabled rows="5" cols="100">@Model.Post.Body</textarea><br />
+                <small>Posted by @Model.Post.IdentityUser.UserName</small>
+            </div>
+
+            @if (Model.Post.IdentityUserId == ViewBag.CurrentUserName)
+            {
+                @Html.ActionLink("Edit Post", "Edit", "Posts", new { id = Model.Post.Id }, new { @class = "btn btn-primary btn-large" })
+            }
+
+        </div>
+        <div class="col-md-offset-5">
+            @if (Model.Post.PostTypeId == 1)
+            {
+                <table class="table table-striped">
+                    <tr>
+                        <td>Phone Name</td>
+                        <td>@Model.PhoneData.PhoneName</td>
+                    </tr>
+                    <tr>
+                        <td>Battery Name</td>
+                        <td>@Model.PhoneData.BatteryName</td>
+                    </tr>
+                    <tr>
+                        <td>RAM Memory</td>
+                        <td>@Model.PhoneData.MemoryRam</td>
+                    </tr>
+                    <tr>
+                        <td>Camera Pixels</td>
+                        <td>@Model.PhoneData.CameraPixels</td>
+                    </tr>
+                </table>
+
+            }
+            else if (Model.Post.PostTypeId == 2)
+            {
+                <table class="table table-striped">
+                    <tr>
+                        <td>Tablet Name</td>
+                        <td>@Model.TabletData.TabletName</td>
+                    </tr>
+                    <tr>
+                        <td>Screen Size</td>
+                        <td>@Model.TabletData.ScreenSize</td>
+                    </tr>
+                    <tr>
+                        <td>Internal Memory</td>
+                        <td>@Model.TabletData.InternalMemory</td>
+                    </tr>
+                    <tr>
+                        <td>Camera Pixels</td>
+                        <td>@Model.TabletData.CameraPixels</td>
+                    </tr>
+                    <tr>
+                        <td>Battery Name</td>
+                        <td>@Model.TabletData.BatteryName</td>
+                    </tr>
+                </table>
+            }
+        </div>
+    </div>
+    <hr />
+
+
+    <div class="Area">
+
+        <div id="comentaries" style="text-align:center">
+            <button id="QuestionsButton" class="btn btn-default">Questions</button>
+            <button id="ReviewsButton" class="btn btn-default">Buyer Reviews</button>
+        </div>
+
+
+
+        <div class="Questions container-fluid" id="Questions">
+
+            <div class="QuestionsInput">
+
+                @using (Html.BeginForm("GetQuestion", "Posts"))
+                {
+                    @Html.ValidationSummary(true, "Please fix the following errors.")
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Question.Body, new { @class = "container", style = "margin-top:20px; margin-left:470px;" })
+                        @* @Html.TextAreaFor(m => m.Question.Body, new { @class = "form-control", rows = 5, cols = 30, @style = "margin-left:430px;" })*@
+                        @Html.TextAreaFor(m => m.Question.Body, new { cols = 1000, rows = 5, @class = "form-control container", style = "margin-top:20px;" })
+                        @Html.ValidationMessageFor(m => m.Question.Body)
+                    </div>
+
+                    <input type="hidden" name="reportName" value="@Model.Post.Id" />
+
+
+                    @Html.HiddenFor(m => m.Question.Id)
+
+                    <button type="submit" style="margin-left:500px;" class="btn btn-primary">Ask Now!</button>
+                }
+            </div>
+
+
+
+            <hr />
+
+
+            <h3 style="margin-bottom:50px;">Questions From Others</h3>
+
+
+            @foreach (var quest in Model.Questions)
+            {
+                <textarea disabled cols="100" rows="5" style="margin-left:420px;">@quest.Body</textarea>
+                <p style="margin-left:420px; margin-bottom:10px;">By <small>@quest.IdentityUser.Email</small></p>
+
+                if (Model.Post.IdentityUserId == ViewBag.CurrentUserName)
+                {
+
+                    int k = 0;
+
+
+                    foreach (var a in Model.Answers)
+                    {
+                        if (quest.Id == a.QuestionId)
+                        {
+                            k++;
+                        }
+                    }
+
+
+                    if (k == 0)
+                    {
+                        using (Html.BeginForm("GetAnswer", "Posts"))
+                        {
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.Answer.Body, new { @style = "margin-left:420px;" })
+                                @Html.TextBoxFor(m => m.Answer.Body, new { @class = "form-control container", style = "margin-left:420px;" })
+                                @Html.ValidationMessageFor(m => m.Answer.Body)
+                            </div>
+
+                            <input type="hidden" name="questionId" value="@quest.Id" />
+                            <input type="hidden" name="currentPostId" value="@Model.Post.Id" />
+
+                            <button style="margin-left:420px; margin-bottom:20px;" type="submit" class="btn btn-primary">Answer</button>
+
+                        }
+                    }
+                    else
+                    {
+                        foreach (var ans in Model.Answers)
+                        {
+
+                            if (quest.Id == ans.QuestionId)
+                            {
+                                <textarea disabled style="margin-left:600px;">@ans.Body</textarea>
+                                <p style="margin-left:600px;">Answered By <small>@Model.Post.IdentityUser.UserName</small></p>
+                            }
+                        }
+                    }
+                }
+
+            }
+
+
+
+        </div>
+
+
+
+
+        <div class="Reviews" id="Reviews" hidden>
+
+            <div class="ReviewsInput">
+
+                @using (Html.BeginForm("GetReview", "Posts"))
+                {
+                    @Html.ValidationSummary(true, "Please fix the following errors.")
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Review.Body, new { @class = "container", style = "margin-top:20px; margin-left:480px;" })
+                        @Html.TextAreaFor(m => m.Review.Body, new { cols = 1000, rows = 5, @class = "form-control container", style = "margin-top:20px;" })
+                        @Html.ValidationMessageFor(m => m.Review.Body)
+                    </div>
+
+                    <input type="hidden" name="currentPostId" value="@Model.Post.Id" />
+
+
+                    @Html.HiddenFor(m => m.Review.Id)
+
+                    <button type="submit" style="margin-left:500px;" class="btn btn-primary">Add Review</button>
+                }
+            </div>
+
+            <h3>Reviews From Others</h3>
+
+            @foreach (var review in Model.Reviews)
+            {
+                <textarea disabled cols="100" rows="5" style="margin-left:420px;">@review.Body</textarea>
+                <p style="margin-left:420px;">By <small>@review.IdentityUser.Email</small></p>
+            }
+
+        </div>
+
+
+
+    </div>
+</class>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $("#QuestionsButton").click(function () {
+            $("#Questions").show();
+            $("#Reviews").hide();
+        });
+
+        $("#ReviewsButton").click(function () {
+            $("#Questions").hide();
+            $("#Reviews").show();
+        });
+
+    });
+
+
+
+</script>
+
+
+@section scripts
+{
+    @Scripts.Render("~/bundles/jqueryval")
+}

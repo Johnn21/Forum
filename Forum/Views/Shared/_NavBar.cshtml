@@ -1,0 +1,69 @@
+﻿<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<style>
+    .navbar .search-container button {
+        float: right;
+        padding: 1px 10px;
+        margin-top: 10px;
+        margin-right: 16px;
+        background: #ddd;
+        font-size: 15px;
+        border: none;
+        cursor: pointer;
+    }
+
+    .navbar .search-container {
+        float: right;
+    }
+
+    .navbar input[type=text] {
+        padding: 1px;
+        margin-top: 10px;
+        font-size: 15px;
+        border: none;
+    }
+
+</style>
+
+
+
+<div class="navbar navbar-inverse navbar-fixed-top container">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            @Html.ActionLink("Forum", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                @if (Request.IsAuthenticated)
+                {
+
+                    if (!User.IsInRole("CanDeletePosts"))
+                    {
+                        <li>@Html.ActionLink("New Post", "Index", "Posts")</li>
+                        <li>@Html.ActionLink("Your Posts", "UserPosts", "Posts")</li>
+                    }
+                   
+                }
+
+                <li style="margin-left:60px;">@Html.ActionLink("All Posts", "Index", "Home")</li>
+                <li>@Html.ActionLink("Phones", "ShowPhones", "Home")</li>
+                <li>@Html.ActionLink("Tablets", "ShowTablets", "Home")</li>
+                <div class="search-container" style="margin-top:5px; margin-left:30px;">
+                    @using (Html.BeginForm("SearchPost", "Posts"))
+                    {
+
+                        <input type="text" placeholder="Search" name="search" style="margin-top:10px;">
+                        <button type="submit"><i class="fa fa-search"></i></button>
+                    }
+                </div>
+            </ul>
+            
+            @Html.Partial("_LoginPartial")
+        </div>
+    </div>
+</div>

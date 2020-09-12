@@ -1,0 +1,78 @@
+﻿@model Forum.Models.Post
+
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Edit</h2>
+
+@using (Html.BeginForm("Save", "Posts"))
+{
+
+    <div id="Posts">
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Name)
+            @Html.TextBoxFor(m => m.Name, new { @class = "form-control", @id = "NameField" })
+            @Html.ValidationMessageFor(m => m.Name)
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Body)
+            @Html.TextAreaFor(m => m.Body, new { @class = "form-control", @id = "BodyField" })
+            @Html.ValidationMessageFor(m => m.Body)
+        </div>
+
+
+        @Html.HiddenFor(m => m.Id, new { @id = "Id" })
+
+
+
+        <button id="submit" data-post-id="@Model.Id" type="submit" class="btn btn-primary">Save</button>
+    </div>
+}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+
+    $(document).ready(function () {
+        $("#submit").click(function () {
+            var name = $("#NameField").val();
+            var body = $("#BodyField").val();
+            var id = $("#Id").val();
+            var userId = $("#userId").val();
+            var date = $("#date").val();
+
+            var button = $(this);
+            $.ajax({
+                url: "/api/posts/" + button.attr("data-post-id"),
+                type: "PUT",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                data: {
+                    name: name,
+                    body: body,
+                    id: id,
+                    userId: userId,
+                    date: date
+                },
+                success: function () {
+                    alert("Da");
+                },
+                error: function (result) {
+                    alert('Oh no :(');
+                }
+            })
+
+        });
+    });
+
+</script>
+
+@section scripts
+{
+    @Scripts.Render("~/bundles/jqueryval")
+}

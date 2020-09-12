@@ -1,0 +1,143 @@
+﻿
+@model Forum.ViewModels.CreatePostModel
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+@using (Html.BeginForm("Save", "Posts"))
+{
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Post.Name)
+        @Html.TextBoxFor(m => m.Post.Name, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Post.Name)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Post.Body)
+        @Html.TextAreaFor(m => m.Post.Body, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Post.Body)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Post.PostTypeId)
+        @Html.DropDownListFor(m => m.Post.PostTypeId, new SelectList(Model.PostTypes, "Id", "Name"), "Select Post Type", new { @class = "form-control", @id = "Drop" })
+        @Html.ValidationMessageFor(m => m.Post.PostTypeId)
+    </div>
+
+
+    @Html.HiddenFor(m => m.Post.Id)
+    @Html.HiddenFor(m => m.Post.IdentityUserId)
+
+    <div id="PhoneInput" hidden>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.PhoneData.PhoneName)
+            @Html.TextBoxFor(m => m.PhoneData.PhoneName, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.PhoneData.PhoneName)
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.PhoneData.BatteryName)
+            @Html.TextBoxFor(m => m.PhoneData.BatteryName, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.PhoneData.BatteryName)
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.PhoneData.MemoryRam)
+            @Html.TextBoxFor(m => m.PhoneData.MemoryRam, "{0:#.#}", new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.PhoneData.MemoryRam)
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.PhoneData.CameraPixels)
+            @Html.TextBoxFor(m => m.PhoneData.CameraPixels, "{0:#.#}", new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.PhoneData.CameraPixels)
+        </div>
+
+        @Html.HiddenFor(m => m.PhoneData.Id)
+    </div>
+
+    <div id="TabletInput" hidden>
+        <div class="form-group">
+            @Html.LabelFor(m => m.TabletData.TabletName)
+            @Html.TextBoxFor(m => m.TabletData.TabletName, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.TabletData.TabletName)
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.TabletData.ScreenSize)
+            @Html.TextBoxFor(m => m.TabletData.ScreenSize, "{0:#.#}", new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.TabletData.ScreenSize)
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.TabletData.InternalMemory)
+            @Html.TextBoxFor(m => m.TabletData.InternalMemory, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.TabletData.InternalMemory)
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.TabletData.CameraPixels)
+            @Html.TextBoxFor(m => m.TabletData.CameraPixels, "{0:#.#}", new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.TabletData.CameraPixels)
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.TabletData.BatteryName)
+            @Html.TextBoxFor(m => m.TabletData.BatteryName, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.TabletData.BatteryName)
+        </div>
+
+
+
+        @Html.HiddenFor(m => m.TabletData.Id)
+
+    </div>
+
+
+    <input id="decision" type="hidden" value="" name="decision" />
+
+    <button type="submit" class="btn btn-primary">Save</button>
+}
+
+
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+
+        $("#Drop").click(function () {
+            var a = $('#Drop :selected').text();
+            console.log("story " + a);
+            if (a == "Phones") {
+                $("#PhoneInput").show();
+                $("#TabletInput").hide();
+                $('#decision').val("addPhone");
+            } else if (a == "Tablets") {
+                $("#TabletInput").show();
+                $("#PhoneInput").hide();
+                $('#decision').val("addTablet");
+            } else {
+                $("#TabletInput").hide();
+                $("#PhoneInput").hide();
+                $('#decision').val("");
+            }
+        });
+
+    });
+
+
+
+</script>
+
+
+@section scripts
+{
+    @Scripts.Render("~/bundles/jqueryval")
+}
